@@ -1,0 +1,87 @@
+function Simulace
+% Hlavni fce Simulace, v teto funkci jsou definovany hlavni podprogramy
+%-------------------------------------------------------------------------
+
+%definice globálních promìnných
+global praveprobiha mereni SNRdb snrmin snrmax snrkrok BERpostFEC BERkanal BERpostLDPC BERpostBCH
+global simulacesbch
+%-------------------------------------------------------------------------
+clc
+
+
+if mereni == 1
+    pocethodnot = (1/snrkrok)*(snrmax - snrmin + 1);
+    disp(['Èekejte, dokud neskonèí simulace'])
+    krok = 0;
+    
+    for cyklus = snrmin:snrkrok:snrmax
+    mazani
+    krok = krok+1;
+    SNRdb = cyklus;
+    disp(['Simulace pro SNR [dB]: ' num2str(SNRdb)])
+    Mode_adaptation_podprogram
+    Stream_adaptation_podprogram
+    FEC_kodovani_podprogram
+    Mapovani_podprogram
+    PL_framing_podprogram
+    AWGN_kanal_podprogram
+    demodulace_AWGN
+    demodulace_Complex
+    demodulace_hlavni_odprokladac
+    demodulace_ldpc
+    demodulace_bitoveodprokladani
+    SNRhodnoty(krok,:) = SNRdb;
+    simulace_data_excel(krok,:) = BERkanal;
+    simulace_data_excel2(krok,:) = BERpostLDPC;
+    if simulacesbch == 1
+        simulace_data_excel3(krok,:) = BERpostBCH;
+    else
+    end
+    simulace_data_excel4(krok,:) = BERpostFEC;
+    end
+    disp(['Konec simulace'])
+    if simulacesbch == 1
+        delete('data.xls');
+        d = {'SNR [dB]','BER kanal [-]','BER post/LDPC [-]','BER post/BCH [-]','BER post/FEC [-]'};
+        xlswrite('data.xls', d, 1, 'A1');
+        xlswrite('data.xls',SNRhodnoty,'List1','A2');
+        xlswrite('data.xls',simulace_data_excel,'List1','B2');
+        xlswrite('data.xls',simulace_data_excel2,'List1','C2');
+        xlswrite('data.xls',simulace_data_excel3,'List1','D2');
+        xlswrite('data.xls',simulace_data_excel4,'List1','E2');
+    else
+        delete('data.xls');
+        d = {'SNR [dB]','BER kanal [-]','BER post/LDPC [-]','BER post/FEC [-]'};
+        xlswrite('data.xls', d, 1, 'A1');
+        xlswrite('data.xls',SNRhodnoty,'List1','A2');
+        xlswrite('data.xls',simulace_data_excel,'List1','B2');
+        xlswrite('data.xls',simulace_data_excel2,'List1','C2');
+        xlswrite('data.xls',simulace_data_excel4,'List1','D2');
+    end
+elseif mereni == 0
+    
+mazani
+praveprobiha = 'Mode adaptation'
+Mode_adaptation_podprogram
+praveprobiha = 'Stream adaptation'
+Stream_adaptation_podprogram
+praveprobiha = 'FEC kódování - podprogram mùže trvat nìkolik minut'
+FEC_kodovani_podprogram
+praveprobiha = 'Mapování + obslužný podprogram'
+Mapovani_podprogram
+praveprobiha = 'PL Framing'
+PL_framing_podprogram
+praveprobiha = 'AWGN kanál'
+AWGN_kanal_podprogram
+praveprobiha = 'Demodulace AWGN kanálu'
+demodulace_AWGN
+praveprobiha = 'Komplexní deskramblování'
+demodulace_Complex
+praveprobiha = 'Demodulace a odprokládání'
+demodulace_hlavni_odprokladac
+praveprobiha = 'LDPC a BCH dekódování - podprogram mùže trvat 2 a více minut'
+demodulace_ldpc
+praveprobiha = 'Bitové odprokládání'
+demodulace_bitoveodprokladani
+
+end

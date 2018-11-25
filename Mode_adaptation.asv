@@ -1,0 +1,134 @@
+function varargout = Mode_adaptation(varargin)
+% Last Modified by GUIDE v2.5 10-Nov-2010 21:27:06
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @Mode_adaptation_OpeningFcn, ...
+                   'gui_OutputFcn',  @Mode_adaptation_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before Mode_adaptation is made visible.
+function Mode_adaptation_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+% UIWAIT makes Mode_adaptation wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% --- Outputs from this function are returned to the command line.
+function varargout = Mode_adaptation_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+% --- Executes on button press in pushbutton1.
+function pushbutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global stream_on2 mode_on
+stream_on2=1;
+mode_on=1;
+close;
+
+
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global radio1 radio2 radio3 Image_input
+set(handles.pushbutton1,'visible','off');
+set(handles.uipanel2,'visible','on');
+if radio1==1
+      axes(handles.axes1) %definice, ktery axes bude aktivni
+      axes1 = imshow(Image_input); %vykresleni do grafu
+      set(handles.text4,'visible','off');
+      set(handles.text5,'visible','off');
+      set(handles.pushbutton7,'visible','on');
+end
+if radio2==1
+      axes(handles.axes2)
+      axes2 = imshow('random.jpg');
+      set(handles.pushbutton5,'visible','on');
+      set(handles.pushbutton6,'visible','on');
+      set(handles.pushbutton7,'visible','on');
+      set(handles.text4,'visible','off');
+      set(handles.text5,'visible','off');
+end
+if radio3==1
+    
+end
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global Datova_posloupnost
+Datova_posloupnost %vypsani hodnot
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global Datova_posloupnost
+Datova_posloupnost = randerr(1,1504,[752]);
+set(handles.text4,'visible','off');
+set(handles.text5,'visible','off');
+set(handles.pushbutton1,'enable','off');
+
+
+% --- Executes on button press in pushbutton7.
+function pushbutton7_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global Datova_posloupnost stream_on BBHeader
+set(handles.text4,'visible','on');
+set(handles.text5,'visible','on');
+set(handles.pushbutton1,'enable','on');
+set(handles.pushbutton1,'visible','on');
+Hlavicka = randerr(1,80,[40]); % nahodna posloupnost
+BBHeader = [Datova_posloupnost,Hlavicka]; %spojeni hodnot
+stream_on=1;
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+global stream_on mode_on
+if stream_on==1
+    delete(hObject);
+    mode_on=1;
+else
+end
+
+
