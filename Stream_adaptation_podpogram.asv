@@ -1,8 +1,0 @@
-function Stream_adaptation_podpogram
-%%Funkce Mode adaptation, podprogram
-%--------------------------------------------------------------------------
-%definice globalnich promennych
-global BBHeader delka_ramce kodovy_pomer 
-%--------------------------------------------------------------------------
-%Padding
-%==========================================================================
